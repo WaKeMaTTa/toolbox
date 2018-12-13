@@ -30,7 +30,7 @@ function checkout() {
 
   if [ "$use_cache" = "--use-cache" ]; then
     echo "[Experimental stability] Using cached Git repository."
-    #cache restore git-cache-
+    cache restore git-cache-
 
     if [ -d "$HOME/$SEMAPHORE_GIT_DIR" ]; then
       echo "Restored cache"
