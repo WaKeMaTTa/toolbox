@@ -56,7 +56,8 @@ function checkout() {
     local cache_age=$(cache list | grep git-cache- | awk '{ print $1 }' | head -1 | cut -d'-' -f3)
     local now=$(date +%s)
     local diff=$(expr $now - $cache_age)
-    if (( $diff > 10 )); then
+    echo "diff: $diff"
+    if (( diff > 10 )); then
       echo "Wow this is old cache. Let's refresh it..."
       cd ..
       cache store git-cache-`date +%s` $SEMAPHORE_GIT_DIR
