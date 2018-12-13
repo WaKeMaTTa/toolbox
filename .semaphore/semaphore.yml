@@ -24,5 +24,7 @@ blocks:
           - checkout
           - cd
           - cache store git-cache-$RANDOM rails
+          - export SEMAPHORE_GIT_BRANCH=5-0-stable
+          - cache list
           - rm -rf rails
           - checkout --use-cache
