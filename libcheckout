@@ -14,18 +14,43 @@ function checkout() {
     return 0
   fi
 
-  if [ -z $SEMAPHORE_GIT_BRANCH ] || [ -z $SEMAPHORE_GIT_URL ] || [ -z $SEMAPHORE_GIT_DIR ] || [ -z $SEMAPHORE_GIT_SHA ]; then
-    echo "[CHECKOUT ERROR] Some of these variables are unset:"
-    echo "SEMAPHORE_GIT_URL=$SEMAPHORE_GIT_URL"
-    echo "SEMAPHORE_GIT_DIR=$SEMAPHORE_GIT_DIR"
-    echo "SEMAPHORE_GIT_BRANCH=$SEMAPHORE_GIT_BRANCH"
-    echo "SEMAPHORE_GIT_SHA=$SEMAPHORE_GIT_SHA"
+  #if [ -z $SEMAPHORE_GIT_BRANCH ] || [ -z $SEMAPHORE_GIT_URL ] || [ -z $SEMAPHORE_GIT_DIR ] || [ -z $SEMAPHORE_GIT_SHA ]; then
+  #  echo "[CHECKOUT ERROR] Some of these variables are unset:"
+  #  echo "SEMAPHORE_GIT_URL=$SEMAPHORE_GIT_URL"
+  #  echo "SEMAPHORE_GIT_DIR=$SEMAPHORE_GIT_DIR"
+  #  echo "SEMAPHORE_GIT_BRANCH=$SEMAPHORE_GIT_BRANCH"
+  #  echo "SEMAPHORE_GIT_SHA=$SEMAPHORE_GIT_SHA"
 
-    return 1
+  #  return 1
+  #fi
+
+  local use_cache=$1
+  local branch_ref="refs/heads/$SEMAPHORE_GIT_BRANCH"
+  local branch_origin="origin/$SEMAPHORE_GIT_BRANCH"
+
+  if [ "$use_cache" = "--use-cache" ]; then
+    echo "[Experimental stability] Using cached Git repository."
+    #cache restore git-cache-
+
+    if [ -d "$HOME/$SEMAPHORE_GIT_DIR" ]; then
+      cd $SEMAPHORE_GIT_DIR
+      git remote prune origin
+      git fetch --tags origin
+
+      if [[ -n $(git show-ref $branch_ref) ]]; then
+        git checkout $SEMAPHORE_GIT_BRANCH
+      else
+        git checkout -b $SEMAPHORE_GIT_BRANCH -t $branch_origin;
+      fi
+
+      git reset --hard $SEMAPHORE_GIT_SHA
+    fi
+
+  else
+    git clone $SEMAPHORE_GIT_URL $SEMAPHORE_GIT_DIR
+    cd $SEMAPHORE_GIT_DIR
+    git checkout $SEMAPHORE_GIT_BRANCH
+    git reset --hard $SEMAPHORE_GIT_SHA
   fi
 
-  git clone $SEMAPHORE_GIT_URL $SEMAPHORE_GIT_DIR
-  cd $SEMAPHORE_GIT_DIR
-  git checkout $SEMAPHORE_GIT_BRANCH
-  git reset --hard $SEMAPHORE_GIT_SHA
 }
