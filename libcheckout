@@ -51,6 +51,20 @@ function checkout() {
       git checkout $SEMAPHORE_GIT_BRANCH
       git reset --hard $SEMAPHORE_GIT_SHA
     fi
+
+    # store into cache if older then 72h
+    local cache_age=$(cache list | grep git-cache- | awk '{ print $1 }' | head -1 | cut -d'-' -f3)
+    local now=$(date +%s)
+    local diff=$(expr $now - $cache_age)
+    if (( $diff > 10 )); then
+      echo "Wow this is old cache. Let's refresh it..."
+      cd ..
+      cache store git-cache-`date +%s` $SEMAPHORE_GIT_DIR
+      cd $SEMAPHORE_GIT_DIR
+    else
+      echo "Not creating new cache, this one is fresh enough"
+    fi
+
   else
     git clone $SEMAPHORE_GIT_URL $SEMAPHORE_GIT_DIR
     cd $SEMAPHORE_GIT_DIR
