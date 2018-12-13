@@ -23,7 +23,6 @@ blocks:
           - export SEMAPHORE_GIT_SHA=f907b418aecfb6dab4e30149b88a8593ddd321b9
           - checkout
           - cd
-          - cache store git-cache-$RANDOM rails
           - export SEMAPHORE_GIT_BRANCH=5-0-stable
           - cache list
           - rm -rf rails
