@@ -3,7 +3,7 @@ HOST="http://packages.semaphoreci.com"
 
 install::available() {
   response=$(curl --write-out %{http_code} --head --silent --output /dev/null $HOST/${language}/${language_version}.tar.gz)
-  if [[ $response -eq 200 ]]; then 
+  if [[ $response -ne 200 ]]; then 
     echo 1
   else
     echo 0
