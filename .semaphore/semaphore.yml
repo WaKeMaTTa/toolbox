@@ -22,5 +22,6 @@ blocks:
           - export SEMAPHORE_GIT_DIR=rails
           - export SEMAPHORE_GIT_SHA=f907b418aecfb6dab4e30149b88a8593ddd321b9
           - checkout
+          - cd
           - rm -rf rails
           - checkout --use-cache

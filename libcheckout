@@ -33,7 +33,8 @@ function checkout() {
     #cache restore git-cache-
 
     if [ -d "$HOME/$SEMAPHORE_GIT_DIR" ]; then
-      cd $SEMAPHORE_GIT_DIR
+      echo "Restored cache"
+      cd $HOME/$SEMAPHORE_GIT_DIR
       git remote prune origin
       git fetch --tags origin
 
